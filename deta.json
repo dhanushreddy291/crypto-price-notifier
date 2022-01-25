@@ -14,6 +14,54 @@
       "description": "A name for the database stored in deta base. (Optional)",
       "value": "CRYPTO-LOGS",
       "required": false
+    },
+    {
+      "MARGIN_CALL": "MARGIN_CALL",
+      "description": "Enter the price at which you want a first call",
+      "value": "0",
+      "required": true
+    },
+    {
+      "LIQUIDATION_CALL": "LIQUIDATION_CALL",
+      "description": "Enter the price at which you want a second call",
+      "value": "0",
+      "required": true
+    },
+    {
+      "TWILIO_SID": "TWILIO_SID",
+      "description": "Enter your Twilio SID Token from your Twilio Console",
+      "value": "",
+      "required": true
+    },
+    {
+      "TWILIO_AUTH_TOKEN": "TWILIO_AUTH_TOKEN",
+      "description": "Enter Twilio AUTH Token from your Twilio Console",
+      "value": "",
+      "required": true
+    },
+    {
+      "TWILIO_PHONE_NUMBER": "TWILIO_PHONE_NUMBER",
+      "description": "Enter your Twilio Phone Number (with the country code)",
+      "value": "",
+      "required": true
+    },
+    {
+      "TWILIO_MESSAGE_MARGIN": "TWILIO_MESSAGE_MARGIN",
+      "description": "Enter the message you want on call for your first price target",
+      "value": "Your first price target for Bitcoin has reached",
+      "required": false
+    },
+    {
+      "TWILIO_MESSAGE_LIQ": "TWILIO_MESSAGE_LIQ",
+      "description": "Enter the message you want on call for your second price target",
+      "value": "Your second price target for Bitcoin has reached",
+      "required": false
+    },
+    {
+      "PHONE_NUMBER_WITH_COUNTRY_CODE": "PHONE_NUMBER_WITH_COUNTRY_CODE",
+      "description": "Enter your Mobile Number where you want to receive the call (with the country code). Please make sure this number is added to verified numbers list in your Twilio Account ",
+      "value": "",
+      "required": true
     }
   ],
   "cron": "1 minute"
