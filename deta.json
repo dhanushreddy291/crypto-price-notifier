@@ -1,0 +1,20 @@
+{
+  "name": "Crypto Price Notifier",
+  "description": "A Simple CRON JOB that checks price of the coin you want at every fixed interval and notifies via call by using Twilio API.",
+  "runtime": "micro's runtime",
+  "env": [
+    {
+      "PROJECT_KEY": "PROJECT_KEY",
+      "description": "Get a Project Key from deta.sh settings",
+      "value": "",
+      "required": true
+    },
+    {
+      "DETABASE_NAME": "DETABASE_NAME",
+      "description": "A name for the database stored in deta base. (Optional)",
+      "value": "CRYPTO-LOGS",
+      "required": false
+    }
+  ],
+  "cron": "1 minute"
+}
