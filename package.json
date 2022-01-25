@@ -1,0 +1,8 @@
+{
+  "dependencies": {
+    "axios": "^0.25.0",
+    "deta": "^1.0.1",
+    "express": "^4.17.2",
+    "twilio": "^3.73.0"
+  }
+}
