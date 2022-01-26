@@ -1,96 +1,108 @@
 const { app, Deta } = require("deta");
 const axios = require("axios");
-
-// add your Project Key
 const deta = Deta(process.env.PROJECT_KEY);
-//
-// Envorment Varaibles
-const db = deta.Base(process.env.DETABASE);
+
+const db = deta.Base(process.env.DETABASE_NAME);
 const accountSid = process.env.TWILIO_SID;
 const authToken = process.env.TWILIO_AUTH_TOKEN;
 const client = require("twilio")(accountSid, authToken);
-const marginCall = process.env.MARGIN_CALL;
-const liquidationCall = process.env.LIQUIDATION_CALL;
+const firstPrice = process.env.FIRST_PRICE;
+const secondPrice = process.env.SECOND_PRICE;
 const PhoneNumber = process.env.PHONE_NUMBER_WITH_COUNTRY_CODE;
+const coinName = process.env.COINNAME;
+const twilioNumber = process.env.TWILIO_PHONE_NUMBER;
+const coinSymbol = process.env.COIN_SYMBOL_IN_BINANCE;
 
-let btcprice = 0;
+let coinPrice = 0;
 
-// define a function to run on a schedule
-// the function must take an event as an argument
 app.lib.cron(async (event) => {
-  console.log("CRON running @ " + new Date().toLocaleTimeString());
-  const resp = await getBitcoinPrice();
-  const data = resp.data;
-  console.log("Current BTC price ===>", data.price);
-  btcprice = parseInt(data.price);
-  //btcprice = 23000; this variable holds the btc price at that moment
+  // Logging here so that it can be seen on deta.sh Visor when it is being called
+  console.log("Last run at " + new Date().toLocaleTimeString());
 
-  // hascalled is the key in the database, which stores if phone call made for liquidation/Margin conditions when the predefined criteria met.
-  // Suppose if BTC price met Margin condition then a call will be made , once its made,the code is not going
-  // to make a another call in the very next run even the condition satisfied.
+  const resp = await getCoinPrice();
+  coinPrice = parseInt(resp.data.price);
 
-  // querying the DB for the key `hascalled`
-  let hasCalled = await db.get("hascalled");
+  // Logging here so that it can be seen on deta.sh Visor
+  console.log(`Price of ${coinName} is currently $${coinPrice}`);
 
-  console.log("values from db for the key named hascalled is  -->", hasCalled);
-  if (hasCalled == null) {
-    // Runs for the very first time
+  // Checking if a call reminder has been made already
+  let reminderSent = await db.get("remindersent");
+  let consoleMsg = reminderSent
+    ? "has been sent already 🙂"
+    : "hasn't been sent till now 📈";
 
-    // initally set margin and liq to false for the key 'hascalled' in db
+  // Logging here so that it can be seen on deta.sh Visor
+  console.log(`The Reminder ${consoleMsg}`);
+
+  // For the First Runtime of the Job
+  if (reminderSent === null) {
     const insertedkey = await db.put(
-      { margin: false, liq: false },
-      "hascalled"
+      { firstReminder: false, secondReminder: false },
+      "remindersent"
     );
-
-    hasCalled = insertedkey;
+    reminderSent = insertedkey;
   }
 
-  //_BTCValidation_Block_Margin
-  if (hasCalled.margin == false) {
-    // This block will get executed only if there was no liquidation call not made yet
-    await _BTCValidationMargin();
+  // If the reminder isn't sent yet
+  if (reminderSent.firstReminder === false) {
+    await FirstCaller();
   }
 
-  //_BTCValidation_Block_Liquidation
-  if (hasCalled.liq == false) {
-    // This block will get executed only if there was no liquidation call not made yet
-    await _BTCValidationliquid();
+  // If the second reminder isn't sent yet
+  if (reminderSent.secondReminder === false) {
+    await SecondCaller();
   }
 });
 
-const _BTCValidationMargin = async () => {
-  if (btcprice < marginCall && btcprice > liquidationCall) {
-    await getCallfromTwillo(process.env.TWILIO_MESSAGE_MARGIN, PhoneNumber);
+const FirstCaller = async () => {
+  if (coinPrice <= firstPrice && coinPrice > secondPrice) {
+    await getCallfromTwillo(process.env.TWILIO_FIRST_PRICE_MESSAGE, PhoneNumber);
 
-    const updateState = await db.update({ margin: true }, "hascalled");
-    console.log("DB UPDATED For Margin --->", updateState);
+    const updateState = await db.update(
+      { firstReminder: true },
+      "remindersent"
+    );
+
+    // Logging here so that it can be seen on deta.sh Visor
+    console.log(`firstReminder in the base changed to: ${updateState}`);
   }
 };
 
-const _BTCValidationliquid = async () => {
-  if (btcprice < liquidationCall) {
-    await getCallfromTwillo(process.env.TWILIO_MESSAGE_LIQ, PhoneNumber);
+const SecondCaller = async () => {
+  if (coinPrice <= secondPrice) {
+    await getCallfromTwillo(process.env.TWILIO_SECOND_PRICE_MESSAGE, PhoneNumber);
 
-    const updateState = await db.update({ liq: true }, "hascalled");
-    console.log("DB UPDATED For Liquid --->", updateState);
+    const updateState = await db.update(
+      { secondReminder: true },
+      "remindersent"
+    );
+
+    // Logging here so that it can be seen on deta.sh Visor
+    console.log(`secondReminder in the base changed to: ${updateState}`);
   }
 };
 
-const getCallfromTwillo = async (msg, _to) => {
+const getCallfromTwillo = async (msg, toNumber) => {
   const call = await client.calls.create({
-    twiml: `<Response><Say>${msg}</Say></Response>`,
-    to: _to,
-    from: process.env.TWILIO_PHONE_NUMBER,
+    twiml: `<Response>
+              <Say>
+                ${msg}
+              </Say>
+            </Response>`,
+    to: toNumber,
+    from: twilioNumber,
   });
+
+  // Logging here the Twilio response onto deta.sh Visor
   console.log(call.sid);
 };
 
-const getBitcoinPrice = async () => {
+const getCoinPrice = async () => {
   try {
-    return await axios.get(
-      "https://api.binance.com/api/v3/ticker/price?symbol=BTCUSDT"
-    );
+    return await axios.get(`https://api.binance.com/api/v3/ticker/price?symbol=${coinSymbol}USDT`);
   } catch (error) {
+
+    // Logging the error details onto deta.sh Visor
     console.error(error);
   }
 };

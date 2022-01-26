@@ -16,13 +16,25 @@
       "required": false
     },
     {
-      "key": "MARGIN_CALL",
+      "key": "COINNAME",
+      "description": "Enter the Coinname",
+      "value": "",
+      "required": true
+    },
+    {
+      "key": "COIN_SYMBOL_IN_BINANCE",
+      "description": "Enter the coin symbol. (ex: BTC for Bitcoin, ETH for Ethereum). Ensure you enter it correctly.",
+      "value": "",
+      "required": true
+    },
+    {
+      "key": "FIRST_PRICE",
       "description": "Enter the price at which you want a first call",
       "value": "0",
       "required": true
     },
     {
-      "key": "LIQUIDATION_CALL",
+      "key": "SECOND_PRICE",
       "description": "Enter the price at which you want a second call",
       "value": "0",
       "required": true
@@ -46,15 +58,15 @@
       "required": true
     },
     {
-      "key": "TWILIO_MESSAGE_MARGIN",
+      "key": "TWILIO_FIRST_PRICE_MESSAGE",
       "description": "Enter the message you want on call for your first price target",
-      "value": "Your first price target for Bitcoin has reached",
+      "value": "Dear Crypto Trader, Your first price target has been reached",
       "required": false
     },
     {
-      "key": "TWILIO_MESSAGE_LIQ",
+      "key": "TWILIO_SECOND_PRICE_MESSAGE",
       "description": "Enter the message you want on call for your second price target",
-      "value": "Your second price target for Bitcoin has reached",
+      "value": "Dear Crypto Trader, Your second price target has been reached",
       "required": false
     },
     {
