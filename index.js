@@ -27,7 +27,7 @@ app.lib.cron(async (event) => {
   console.log(`Price of ${coinName} is currently $${data.price}`);
 
   // Checking if a call reminder has been made already
-  let reminderSent = await db.get("remindersent");
+  let reminderSent = await db.get("reminderSent");
   let consoleMsg = reminderSent
     ? "has been sent already 🙂"
     : "hasn't been sent till now 📈";
@@ -39,7 +39,7 @@ app.lib.cron(async (event) => {
   if (reminderSent == null) {
     const insertedkey = await db.put(
       { firstReminder: false, secondReminder: false },
-      "remindersent"
+      "reminderSent"
     );
     reminderSent = insertedkey;
   }
@@ -64,7 +64,7 @@ const FirstCaller = async () => {
 
     const updateState = await db.update(
       { firstReminder: true },
-      "remindersent"
+      "reminderSent"
     );
 
     // Logging here so that it can be seen on deta.sh Visor
@@ -81,7 +81,7 @@ const SecondCaller = async () => {
 
     const updateState = await db.update(
       { secondReminder: true },
-      "remindersent"
+      "reminderSent"
     );
 
     // Logging here so that it can be seen on deta.sh Visor
