@@ -55,7 +55,7 @@ app.lib.cron(async (event) => {
 });
 
 const FirstCaller = async () => {
-  if (coinPrice <= firstPrice && coinPrice > secondPrice) {
+  if (coinPrice < firstPrice && coinPrice > secondPrice) {
     await getCallfromTwillo(
       process.env.TWILIO_FIRST_PRICE_MESSAGE,
       PhoneNumber
@@ -72,7 +72,7 @@ const FirstCaller = async () => {
 };
 
 const SecondCaller = async () => {
-  if (coinPrice <= secondPrice) {
+  if (coinPrice < secondPrice) {
     await getCallfromTwillo(
       process.env.TWILIO_SECOND_PRICE_MESSAGE,
       PhoneNumber
