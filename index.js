@@ -56,7 +56,10 @@ app.lib.cron(async (event) => {
 
 const FirstCaller = async () => {
   if (coinPrice <= firstPrice && coinPrice > secondPrice) {
-    await getCallfromTwillo(process.env.TWILIO_FIRST_PRICE_MESSAGE, PhoneNumber);
+    await getCallfromTwillo(
+      process.env.TWILIO_FIRST_PRICE_MESSAGE,
+      PhoneNumber
+    );
 
     const updateState = await db.update(
       { firstReminder: true },
@@ -70,7 +73,10 @@ const FirstCaller = async () => {
 
 const SecondCaller = async () => {
   if (coinPrice <= secondPrice) {
-    await getCallfromTwillo(process.env.TWILIO_SECOND_PRICE_MESSAGE, PhoneNumber);
+    await getCallfromTwillo(
+      process.env.TWILIO_SECOND_PRICE_MESSAGE,
+      PhoneNumber
+    );
 
     const updateState = await db.update(
       { secondReminder: true },
@@ -99,9 +105,10 @@ const getCallfromTwillo = async (msg, toNumber) => {
 
 const getCoinPrice = async () => {
   try {
-    return await axios.get(`https://api.binance.com/api/v3/ticker/price?symbol=${coinSymbol}USDT`);
+    return await axios.get(
+      `https://api.binance.com/api/v3/ticker/price?symbol=${coinSymbol}USDT`
+    );
   } catch (error) {
-
     // Logging the error details onto deta.sh Visor
     console.error(error);
   }
