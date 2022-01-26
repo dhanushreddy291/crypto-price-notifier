@@ -35,7 +35,7 @@ app.lib.cron(async (event) => {
   console.log(`The Reminder ${consoleMsg}`);
 
   // For the First Runtime of the Job
-  if (reminderSent === null) {
+  if (reminderSent == null) {
     const insertedkey = await db.put(
       { firstReminder: false, secondReminder: false },
       "remindersent"
@@ -44,12 +44,12 @@ app.lib.cron(async (event) => {
   }
 
   // If the reminder isn't sent yet
-  if (reminderSent.firstReminder === false) {
+  if (reminderSent.firstReminder == false) {
     await FirstCaller();
   }
 
   // If the second reminder isn't sent yet
-  if (reminderSent.secondReminder === false) {
+  if (reminderSent.secondReminder == false) {
     await SecondCaller();
   }
 });
