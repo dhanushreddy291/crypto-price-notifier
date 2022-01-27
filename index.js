@@ -20,8 +20,7 @@ app.lib.cron(async (event) => {
   console.log("Last run at " + new Date().toLocaleTimeString());
 
   const resp = await getCoinPrice();
-  const data = resp.data;
-  coinPrice = parseInt(data.price);
+  coinPrice = parseInt(resp.price);
 
   // Logging here so that it can be seen on deta.sh Visor
   console.log(`Price of ${coinName} is currently $${coinPrice}`);
