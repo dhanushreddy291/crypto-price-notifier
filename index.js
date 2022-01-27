@@ -45,12 +45,12 @@ app.lib.cron(async (event) => {
   }
 
   // If the reminder isn't sent yet
-  if (reminderSent.firstReminder == false) {
+  if (reminderSent.firstReminder == false && coinPrice != 0) {
     await FirstCaller();
   }
 
   // If the second reminder isn't sent yet
-  if (reminderSent.secondReminder == false) {
+  if (reminderSent.secondReminder == false && coinPrice != 0) {
     await SecondCaller();
   }
 });
