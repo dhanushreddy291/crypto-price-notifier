@@ -25,14 +25,14 @@ app.lib.cron(async (event) => {
   // Logging here so that it can be seen on deta.sh Visor
   console.log(`Price of ${coinName} is currently $${coinPrice}`);
 
-  // Checking if a call reminder has been made already
-  let reminderSent = await db.get("reminderSent");
-  let consoleMsg = reminderSent
-    ? "has been sent already 🙂"
-    : "hasn't been sent till now 📈";
+  // // Checking if a call reminder has been made already
+  // let reminderSent = await db.get("reminderSent");
+  // let consoleMsg = reminderSent
+  //   ? "has been sent already 🙂"
+  //   : "hasn't been sent till now 📈";
 
-  // Logging here so that it can be seen on deta.sh Visor
-  console.log(`The Reminder ${consoleMsg}`);
+  // // Logging here so that it can be seen on deta.sh Visor
+  // console.log(`The Reminder ${consoleMsg}`);
 
   // For the First Runtime of the Job
   if (reminderSent == null) {
