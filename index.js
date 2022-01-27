@@ -8,7 +8,7 @@ const authToken = process.env.TWILIO_AUTH_TOKEN;
 const client = require("twilio")(accountSid, authToken);
 const firstPrice = process.env.FIRST_PRICE;
 const secondPrice = process.env.SECOND_PRICE;
-const PhoneNumber = process.env.PHONE_NUMBER_WITH_COUNTRY_CODE;
+const phoneNumber = process.env.PHONE_NUMBER_WITH_COUNTRY_CODE;
 const coinName = process.env.COINNAME;
 const twilioNumber = process.env.TWILIO_PHONE_NUMBER;
 const coinSymbol = process.env.COIN_SYMBOL_IN_BINANCE;
@@ -58,7 +58,7 @@ const FirstCaller = async () => {
   if (coinPrice < firstPrice && coinPrice > secondPrice) {
     await getCallfromTwillo(
       process.env.TWILIO_FIRST_PRICE_MESSAGE,
-      PhoneNumber
+      phoneNumber
     );
 
     const updateState = await db.update(
@@ -75,7 +75,7 @@ const SecondCaller = async () => {
   if (coinPrice < secondPrice) {
     await getCallfromTwillo(
       process.env.TWILIO_SECOND_PRICE_MESSAGE,
-      PhoneNumber
+      phoneNumber
     );
 
     const updateState = await db.update(
