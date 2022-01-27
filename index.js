@@ -21,10 +21,10 @@ app.lib.cron(async (event) => {
 
   const resp = await getCoinPrice();
   const data = resp.data;
-  const coinPrice = parseInt(data.price);
+  coinPrice = parseInt(data.price);
 
   // Logging here so that it can be seen on deta.sh Visor
-  console.log(`Price of ${coinName} is currently $${data.price}`);
+  console.log(`Price of ${coinName} is currently $${coinPrice}`);
 
   // Checking if a call reminder has been made already
   let reminderSent = await db.get("reminderSent");
